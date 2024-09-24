@@ -49,7 +49,7 @@
         }
 
         .dislike-button {
-            cursor:pointer;
+            cursor: pointer;
             color: red;
             margin-right: 10px;
         }
@@ -65,18 +65,11 @@
             padding-left: 20px;
         }
 
-        .clike-button {
+        .emo1,
+        .emo2,
+        .emo3 {
+            margin-right: 10px;
             cursor: pointer;
-            color: blue;
-            margin-right: 10px;
-        }
-
-        .emo1 {
-            margin-right: 10px;
-        }
-
-        .emo2 {
-            margin-right: 10px;
         }
     </style>
 </head>
@@ -90,30 +83,51 @@
     </div>
 
     <script>
+        // Load posts from localStorage on page load
+        window.onload = function () {
+            const savedPosts = JSON.parse(localStorage.getItem('posts')) || [];
+            savedPosts.forEach(post => {
+                addPostToDOM(post.message, post.time);
+            });
+        };
+
         document.getElementById('postButton').addEventListener('click', function () {
             var input = document.getElementById('postInput');
             var message = input.value.trim();
             if (message) {
                 var now = new Date();
                 var time = now.toLocaleString();
-                var postDiv = document.createElement('div');
-                postDiv.className = 'post';
-                postDiv.innerHTML = `
-                    <div>${message}</div>
-                    <div class="time">${time}</div>
-                    <span class="like-button" onclick="likePost(this)">Like (<span class="like-count">0</span>)</span>
-                    <span class="dislike-button" onclick="dislikePost(this)">dislike (<span class="dislike-count">0</span>)</span>
-                    <span class="emo1" onclick="emoji1(this)" data-emoji="smile">&#128540;<span class="emo1-count">0</span></span>
-                    <span class="emo2" onclick="emoji2(this)" data-emoji="smile">&#128514;<span class="emo2-count">0</span></span>
-                    <input type="text" class="comment-input" placeholder="Add a comment...">
-                    <button onclick="addComment(this)">Comment</button>
-                   
-                    <div class="comments"></div>
-                `;
-                document.getElementById('posts').appendChild(postDiv);
+
+                // Save post to localStorage
+                savePostToLocalStorage(message, time);
+                addPostToDOM(message, time);
                 input.value = '';
             }
         });
+
+        function savePostToLocalStorage(message, time) {
+            const savedPosts = JSON.parse(localStorage.getItem('posts')) || [];
+            savedPosts.push({ message, time });
+            localStorage.setItem('posts', JSON.stringify(savedPosts));
+        }
+
+        function addPostToDOM(message, time) {
+            var postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            postDiv.innerHTML = `
+                <div>${message}</div>
+                <div class="time">${time}</div>
+                <span class="like-button" onclick="likePost(this)">Like (<span class="like-count">0</span>)</span>
+                <span class="dislike-button" onclick="dislikePost(this)">Dislike (<span class="dislike-count">0</span>)</span>
+                <span class="emo1" onclick="emoji1(this)" data-emoji="smile">&#128540;<span class="emo1-count">0</span></span>
+                <span class="emo2" onclick="emoji2(this)" data-emoji="laugh">&#128514;<span class="emo2-count">0</span></span>
+                <span class="emo3" onclick="emoji3(this)" data-emoji="sad">&#128545;<span class="emo3-count">0</span></span>
+                <input type="text" class="comment-input" placeholder="Add a comment...">
+                <button onclick="addComment(this)">Comment</button>
+                <div class="comments"></div>
+            `;
+            document.getElementById('posts').appendChild(postDiv);
+        }
 
         function likePost(button) {
             var likeCount = button.querySelector('.like-count');
@@ -124,7 +138,7 @@
             var dislikeCount = button.querySelector('.dislike-count');
             dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
         }
-        
+
         function emoji1(button) {
             var emo1count = button.querySelector('.emo1-count');
             emo1count.textContent = parseInt(emo1count.textContent) + 1;
@@ -135,6 +149,10 @@
             emo2count.textContent = parseInt(emo2count.textContent) + 1;
         }
 
+        function emoji3(button) {
+            var emo3count = button.querySelector('.emo3-count');
+            emo3count.textContent = parseInt(emo3count.textContent) + 1;
+        }
 
         function addComment(button) {
             var commentInput = button.previousElementSibling;

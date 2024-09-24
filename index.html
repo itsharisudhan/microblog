@@ -41,6 +41,43 @@
             font-size: 0.8em;
             color: gray;
         }
+
+        .like-button {
+            cursor: pointer;
+            color: blue;
+            margin-right: 10px;
+        }
+
+        .dislike-button {
+            cursor:pointer;
+            color: red;
+            margin-right: 10px;
+        }
+
+        .comment-input {
+            width: calc(100% - 20px);
+            margin-top: 10px;
+            padding: 5px;
+        }
+
+        .comments {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .clike-button {
+            cursor: pointer;
+            color: blue;
+            margin-right: 10px;
+        }
+
+        .emo1 {
+            margin-right: 10px;
+        }
+
+        .emo2 {
+            margin-right: 10px;
+        }
     </style>
 </head>
 
@@ -64,11 +101,52 @@
                 postDiv.innerHTML = `
                     <div>${message}</div>
                     <div class="time">${time}</div>
+                    <span class="like-button" onclick="likePost(this)">Like (<span class="like-count">0</span>)</span>
+                    <span class="dislike-button" onclick="dislikePost(this)">dislike (<span class="dislike-count">0</span>)</span>
+                    <span class="emo1" onclick="emoji1(this)" data-emoji="smile">&#128540;<span class="emo1-count">0</span></span>
+                    <span class="emo2" onclick="emoji2(this)" data-emoji="smile">&#128514;<span class="emo2-count">0</span></span>
+                    <input type="text" class="comment-input" placeholder="Add a comment...">
+                    <button onclick="addComment(this)">Comment</button>
+                   
+                    <div class="comments"></div>
                 `;
                 document.getElementById('posts').appendChild(postDiv);
                 input.value = '';
             }
         });
+
+        function likePost(button) {
+            var likeCount = button.querySelector('.like-count');
+            likeCount.textContent = parseInt(likeCount.textContent) + 1;
+        }
+
+        function dislikePost(button) {
+            var dislikeCount = button.querySelector('.dislike-count');
+            dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+        }
+        
+        function emoji1(button) {
+            var emo1count = button.querySelector('.emo1-count');
+            emo1count.textContent = parseInt(emo1count.textContent) + 1;
+        }
+
+        function emoji2(button) {
+            var emo2count = button.querySelector('.emo2-count');
+            emo2count.textContent = parseInt(emo2count.textContent) + 1;
+        }
+
+
+        function addComment(button) {
+            var commentInput = button.previousElementSibling;
+            var commentText = commentInput.value.trim();
+            if (commentText) {
+                var commentsDiv = button.nextElementSibling;
+                var commentDiv = document.createElement('div');
+                commentDiv.textContent = commentText;
+                commentsDiv.appendChild(commentDiv);
+                commentInput.value = '';
+            }
+        }
     </script>
 </body>
 
